@@ -8,7 +8,7 @@ try {
     // 1. Se connecter à la base de données
     // Si la connexion est réussie, la variable $connection contiendra l'objet représentant la connexion
     // Sinon, une exception sera levée
-    $connexion = new mysqli("localhost", "root", "root", "to_do_list");
+    $connexion = new mysqli("localhost", "root","","todolist", 3306);
     if (mysqli_connect_errno()) {
         throw new Exception("Impossible de se connecter à la DB");
     }
@@ -18,7 +18,7 @@ try {
     $niveau = $data["niveau"];
 
     // 2. On prépare la requête
-    $requete = "INSERT INTO sondages (niveau) VALUES ('$niveau')";
+    $requete = "INSERT INTO taches (niveau) VALUES ('$niveau')";
     $stmt = $connexion->prepare($requete);
 
     // 3. On exécute la requête
