@@ -23,6 +23,8 @@ export default class Tache {
         this.#templateDetail = document.querySelector("[data-js-task-detail-template]");
         this.#elementHTML;
     }
+
+    init(){}//on va peut etre vouloir l'afficher quand on le créer
     
     injectionTache() {
         //on doit avoir acces a la liste pcq elle doit s'injecter dans la liste de tache

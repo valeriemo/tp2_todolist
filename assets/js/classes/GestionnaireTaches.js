@@ -10,7 +10,7 @@ export default class GestionnaireTaches {
         } else {
             console.error("Un seul gestionnaire possible");
         }
-        
+
         // la liste des taches
         this.#taches = [];
         this.liste = document.querySelector("[data-js-tasks]");
@@ -18,26 +18,23 @@ export default class GestionnaireTaches {
         this.init();
     }
 
-    init(){
+    init() {
         this.recupererTachesBD()
     }
 
     recupererTachesBD() {
         // fetch php
-        console.log('ALLO')
         // je veux faire un fetch pour aller chercher les taches
-        fetch("/api/taches/rechercherTout.php")
+        fetch("api/taches/rechercherTout.php")
             .then((reponse) => {
-                console.log(reponse);
-
                 return reponse.json();
             })
             .then((taches) => {
-                this.#taches = taches;
-                this.#taches.forEach((tache, index) => {
-                    console.log(tache);
+                taches.forEach((tache, index) => {
+                    this.#taches.push(new Tache(tache.id, tache.tache, tache.description, tache.importance));
                 });
             });
+            console.log(this.#taches)
         // on instancie les taches 
         // Pour chaque element de la bd = new Tache()
         // (push de chaque new Tache) on garde un copie des tache (dans le constructeur)
