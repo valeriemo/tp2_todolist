@@ -3,6 +3,7 @@
 // afficher les erreurs à l'écran
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+mysqli_report(MYSQLI_REPORT_ERROR);
 
 try {
     // 1. Se connecter à la base de données
@@ -15,10 +16,11 @@ try {
 
     $data = file_get_contents("php://input");
     $data = json_decode($data, true);
-    $niveau = $data["niveau"];
-
+    $task = $data["task"];
+    $description = $data["description"];
+    $importance = $data["importance"];
     // 2. On prépare la requête
-    $requete = "INSERT INTO taches (niveau) VALUES ('$niveau')";
+    $requete = "INSERT INTO taches (tache, description, importance) VALUES ('$task', '$description', '$importance')";
     $stmt = $connexion->prepare($requete);
 
     // 3. On exécute la requête

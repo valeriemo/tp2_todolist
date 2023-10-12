@@ -67,8 +67,4 @@ export default class Tache {
         
     }
 
-    injecterNouvelleTache(nouvelletache) {
-        // appeller dans le gestionnaire,on ajoute l'élémentHTML avec insertAdjacentHTML()
-    }
-
 }
