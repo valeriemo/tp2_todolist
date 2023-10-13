@@ -90,7 +90,7 @@ span:nth-child(3) {
     color: red;
 }
 
-input.error {
+.error {
     border-color: red;
 }
 

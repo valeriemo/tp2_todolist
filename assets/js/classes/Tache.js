@@ -29,6 +29,10 @@ export default class Tache {
         this.injectionTache();
     }
     
+    getId(){
+        return this.#id;
+    }
+
     injectionTache() {
         // On clone le template
         const contenu = this.#templateTache.content;
@@ -54,6 +58,7 @@ export default class Tache {
     }
 
     afficherDetail() {
+        console.log("voici afficher detail", this.#description);
         // cloner le content de template detail
         const contenu = this.#templateDetail.content;
 

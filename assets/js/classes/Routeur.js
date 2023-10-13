@@ -16,12 +16,8 @@ export default class Routeur {
         this.init();
     }
 
-    // <button data-js-action="show">Afficher le détail</button>
-    // <button data-js-action="delete">Supprimer</button>
 
     init() {
-        console.log(GestionnaireTaches.instance);
-        // ce serai mieux d'écouter la liste (bubling) parce que les enfants sont dynamique
         this.#liste.addEventListener(
             "click",
             function (evenement) {
@@ -31,7 +27,7 @@ export default class Routeur {
                     }
                     const dataId = evenement.target.closest('div[data-js-task]').dataset.jsTask;
                     window.location.hash = dataId;
-                    console.log(evenement.target.dataset.jsAction);
+                    //console.log(evenement.target.dataset.jsAction);
                 }
             }.bind(this)
         );
@@ -55,9 +51,8 @@ export default class Routeur {
         const fragmentsUrl = hash.split("/");
         id = fragmentsUrl[0];
 
-
         // On appelle la méthode de la route
-        if (id !== undefined) {
+        if (id !== "") {
             this.routes["id"](id);
         } else {
             this.routes["/"]();

@@ -1,15 +1,17 @@
 export default class ValidationFormulaire{
-    elInputTask = document.getElementById('task');
-    elInputImportance = document.getElementById('importance');
 
-    // Pour les champs required(le champs tache)
+//On mets un écouteur d'evenement sur le bouton submit 
+
+    // Pour les champs required(le champs tache et importance)
     static estVide(postData) {
+
         let estVide;
-        if(postData.task == ""){
+        if(postData == ""){
             estVide = true;
-        } else {    
+        } else {
             estVide = false;
         }
+
         return estVide;
     }
 

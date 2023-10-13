@@ -3,7 +3,7 @@ export default class Formulaire{
         this.formulaire = document.querySelector('form');
 
         // va cherche la balise html form
-        // dans mon init je vais mettre un écouteur d'évenement de typ
+        // dans mon init je vais mettre un écouteur d'évenement de type
         this.init();
     }
     // Le formulaire va ramasser la donnee et envoyer au gestionnaires 

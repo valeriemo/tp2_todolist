@@ -9,6 +9,9 @@ export default class GestionnaireTaches {
     #routeur;
     #formulaire;
     #validation;
+    inputDescription = document.getElementById('description');
+    inputImportance = document.querySelectorAll('input[type="radio"]');
+    inputTask = document.getElementById('task');
 
     constructor() {
         if (GestionnaireTaches.instance == null) {
@@ -55,20 +58,20 @@ export default class GestionnaireTaches {
     }
 
 
-    afficherAccueil() {
+    async afficherAccueil() {
         console.log('afficher accueil');
         //lié au router (selon le hash cliquer)
         // clear le détail 
     }
 
-    afficherDetailTache() {
+    async afficherDetailTache() {
+        // quand je fais une reload j'ai acces peut etre a l'id avant que la liste soit creer (je devrais attendre le load de la liste??)
         const idTache = location.hash.slice(1);
-    // JE N'ARRIVE PAS A ALLER CHERCHE LE ID CORRESPONDANT A idTache DANS LE TABLEAU 
-        // aller chercher la tache avec son id dans le tableau de la liste des taches
-        // const found = this.#taches.find(tache => tache.id === idTache);
-        let index;
-        console.log(this.#taches);
+        const tacheDetail = this.#taches.find(element => element.getId() == idTache);
+        console.log('ceci est la tache:', tacheDetail);
 
+        tacheDetail.afficherDetail()
+    // COMMENT JE FAIS POUR APPELER LA MÉTHODE AFFICHERDETAIL DE LA CLASSE TACHE
     }
 
     supprimerTache(id) {
@@ -82,10 +85,13 @@ export default class GestionnaireTaches {
 
     }
 
-    ajouterNouvelleTache(postData) {
-        // valider le formulaire-> appele les méthodes de validation
-        const required = ValidationFormulaire.estVide(postData); //if false = valide
-        console.log(required);
+    ajouterNouvelleTache(postData) { // postData = e.detail de l'écouteur d'event dans init()
+        // valider le formulaire-> appel les méthodes de validation
+        const requiredTask = ValidationFormulaire.estVide(postData.task); //if false = valide
+        console.log(this.inputTask);
+        const requiredImportance = ValidationFormulaire.estVide(postData.importance); //if false = valide
+
+
         // si valide, on va faire un fetch a bd pour ajouter l'élément
         const config = {
             method: 'Post',
@@ -100,8 +106,12 @@ export default class GestionnaireTaches {
                 return reponse.json();
             })
             .then((taches) => {
-                //on crée une nouvelle instanche de Tache et on la push dans le tableau des taches
-            });
+                this.#taches.push(new Tache(taches.id, postData.task, postData.description, postData.importance));
+            })
+        
+
+            
+
     }
 
 }
