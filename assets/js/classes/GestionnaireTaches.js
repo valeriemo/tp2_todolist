@@ -39,39 +39,35 @@ export default class GestionnaireTaches {
         }.bind(this))
     }
 
+    // je devrais peut-etre utiliser ASYNC AWAIT?
     recupererTachesBD() {
-        // fetch php
-        // je veux faire un fetch pour aller chercher les taches
         fetch("api/taches/rechercherTout.php")
             .then((reponse) => {
                 return reponse.json();
             })
             .then((taches) => {
                 taches.forEach((tache) => {
-                    // const nouvelleTache = new Tache(tache.id, tache.tache, tache.description, tache.importance);
-                    // this.#taches.push(nouvelleTache);
-
                     this.#taches.push(new Tache(tache.id, tache.tache, tache.description, tache.importance));
-
                 });
             });
     }
 
 
-    async afficherAccueil() {
+
+    // ATTENDRE QUE LA BD SOIT AFFICHER 
+    afficherAccueil() {
         console.log('afficher accueil');
         //lié au router (selon le hash cliquer)
         // clear le détail 
     }
 
-    async afficherDetailTache() {
-        // quand je fais une reload j'ai acces peut etre a l'id avant que la liste soit creer (je devrais attendre le load de la liste??)
+    // ATTENDRE QUE LA BD SOIT AFFICHER 
+    afficherDetailTache() {
         const idTache = location.hash.slice(1);
         const tacheDetail = this.#taches.find(element => element.getId() == idTache);
-        console.log('ceci est la tache:', tacheDetail);
+        //console.log('ceci est la tache:', tacheDetail);
 
         tacheDetail.afficherDetail()
-    // COMMENT JE FAIS POUR APPELER LA MÉTHODE AFFICHERDETAIL DE LA CLASSE TACHE
     }
 
     supprimerTache(id) {
@@ -108,9 +104,9 @@ export default class GestionnaireTaches {
             .then((taches) => {
                 this.#taches.push(new Tache(taches.id, postData.task, postData.description, postData.importance));
             })
-        
 
-            
+
+
 
     }
 

@@ -9,6 +9,7 @@ export default class Tache {
     #templateTache;
     #templateDetail;
     #elementHTML;
+    #conteneurDetail;
 
 
     constructor(id, tache, description, importance) {
@@ -20,16 +21,17 @@ export default class Tache {
         this.#listeHTML = GestionnaireTaches.instance.liste;
         this.#templateTache = document.querySelector("[data-js-task-template]");
         this.#templateDetail = document.querySelector("[data-js-task-detail-template]");
+        this.#conteneurDetail = document.querySelector("[data-js-task-detail]");
         this.#elementHTML;
 
         this.init();
     }
 
-    init(){
+    init() {
         this.injectionTache();
     }
-    
-    getId(){
+
+    getId() {
         return this.#id;
     }
 
@@ -58,18 +60,25 @@ export default class Tache {
     }
 
     afficherDetail() {
-        console.log("voici afficher detail", this.#description);
         // cloner le content de template detail
         const contenu = this.#templateDetail.content;
+        let template = contenu.cloneNode(true);
 
-        // modifier le contenu avec replace all
-        // injecter dans la section du HTML detail
+        const elDiv = template.querySelector('div')
+        const content = elDiv.innerHTML.replaceAll("{{TACHE}}", this.#tache).replaceAll("{{DESCRIPTION}}", this.#description).replaceAll("{{IMPORTANCE}}", this.#importance);
+
+        let elDataId = elDiv.getAttribute('data-id');
+        elDataId = elDataId.replaceAll("{{ID}}", this.#id);
+        elDiv.setAttribute('data-id', elDataId);
+
+        elDiv.innerHTML = content;
+        this.#conteneurDetail.innerHTML = content;
     }
 
     supprimerTache() {
         // on va faire un fetch a bd pour supprimer l'élément
         // quand cest supprimé, on supprime l'élémentHTML avec remove()
-        
+
     }
 
 }
