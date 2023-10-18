@@ -75,10 +75,4 @@ export default class Tache {
         this.#conteneurDetail.innerHTML = content;
     }
 
-    supprimerTache() {
-        // on va faire un fetch a bd pour supprimer l'élément
-        // quand cest supprimé, on supprime l'élémentHTML avec remove()
-
-    }
-
 }

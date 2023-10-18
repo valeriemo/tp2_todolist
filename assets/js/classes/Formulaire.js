@@ -2,16 +2,15 @@ export default class Formulaire{
     constructor(){
         this.formulaire = document.querySelector('form');
 
-        // va cherche la balise html form
-        // dans mon init je vais mettre un écouteur d'évenement de type
+        
         this.init();
     }
+    
     // Le formulaire va ramasser la donnee et envoyer au gestionnaires 
 
     init(){
         this.formulaire.addEventListener('submit', function(e){
             e.preventDefault();
-            console.log(e, this.formulaire.task.value);
             const monEvent = new CustomEvent('submitTask',{
                 // je passe la donnée dans mon custom event dans un objet DETAIL
                 // je passe cette objet dans l'univers 

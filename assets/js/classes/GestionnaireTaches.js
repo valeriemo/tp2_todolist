@@ -2,6 +2,7 @@ import Tache from "./Tache.js";
 import Routeur from "./Routeur.js";
 import Formulaire from "./Formulaire.js";
 import ValidationFormulaire from "./ValidationFormulaire.js";
+import Filtres from "./Filtres.js";
 
 export default class GestionnaireTaches {
     #taches;
@@ -9,6 +10,7 @@ export default class GestionnaireTaches {
     #routeur;
     #formulaire;
     #validation;
+    #filtres;
     inputDescription = document.getElementById('description');
     inputImportance = document.querySelectorAll('input[type="radio"]');
     inputTask = document.getElementById('task');
@@ -27,87 +29,95 @@ export default class GestionnaireTaches {
 
         this.#routeur = new Routeur();
         this.#formulaire = new Formulaire();
+        this.#filtres = new Filtres();
 
         this.init();
     }
 
-    init() {
-        this.recupererTachesBD()
-        // on dit a window de surveiller cette évenement (qui est déclencher avec dispatch event dans le form)
+    async init() {
+        await this.recupererTachesBD();
+
         window.addEventListener('submitTask', function (e) {
+            e.preventDefault();
             this.ajouterNouvelleTache(e.detail);
+        }.bind(this))
+
+        window.addEventListener('taskFilter', function (e) {
+            e.preventDefault();
+            this.#filtres.filtrer(e.detail);
         }.bind(this))
     }
 
-    // je devrais peut-etre utiliser ASYNC AWAIT?
-    recupererTachesBD() {
-        fetch("api/taches/rechercherTout.php")
-            .then((reponse) => {
-                return reponse.json();
-            })
-            .then((taches) => {
-                taches.forEach((tache) => {
-                    this.#taches.push(new Tache(tache.id, tache.tache, tache.description, tache.importance));
-                });
+    async recupererTachesBD() {
+        try {
+            const reponse = await fetch("api/taches/rechercherTout.php");
+            const taches = await reponse.json();
+            taches.forEach((tache) => {
+                this.#taches.push(new Tache(tache.id, tache.tache, tache.description, tache.importance));
             });
+        } catch (erreur) {
+            console.error(erreur);
+        }
     }
 
-
-
-    // ATTENDRE QUE LA BD SOIT AFFICHER 
     afficherAccueil() {
-        console.log('afficher accueil');
-        //lié au router (selon le hash cliquer)
-        // clear le détail 
+        const conteneurDetail = document.querySelector("[data-js-task-detail]")
+        conteneurDetail.innerHTML = '';
     }
 
     // ATTENDRE QUE LA BD SOIT AFFICHER 
-    afficherDetailTache() {
+    async afficherDetailTache() {
         const idTache = location.hash.slice(1);
         const tacheDetail = this.#taches.find(element => element.getId() == idTache);
-        //console.log('ceci est la tache:', tacheDetail);
-
-        tacheDetail.afficherDetail()
+        await tacheDetail.afficherDetail()
     }
 
-    supprimerTache(id) {
-        // On cherche l'index de la tâche dans le tableau
-        const index = this.#taches.findIndex(Tache => tache.id === id);
-        // Si l'index est trouvé, on supprime la tâche du tableau
-        if (index !== -1) {
-            this.#taches.splice(index, 1);
+    async supprimerTache(id) {
+        const config = {
+            method: 'GET',
+            headers: {
+                "Content-type": 'application/json'
+            }
         }
-        // on doit le supprimer de la bd
-
+        try{
+            let reponse = await fetch(`api/taches/supprimerUn.php?id=${id}`, config)
+            reponse = await reponse.json();
+        } catch (erreur) {
+            console.error(erreur);
+        }
+           
+        const indexTache = this.#taches.findIndex(element => element.getId() == id);
+        this.#taches.splice(indexTache, 1);
+        const elAsupprimer = document.querySelector(`[data-js-task="${id}"]`);
+        elAsupprimer.remove();
     }
 
-    ajouterNouvelleTache(postData) { // postData = e.detail de l'écouteur d'event dans init()
+    async ajouterNouvelleTache(postData) { // postData = e.detail de l'écouteur d'event dans init()
         // valider le formulaire-> appel les méthodes de validation
         const requiredTask = ValidationFormulaire.estVide(postData.task); //if false = valide
-        console.log(this.inputTask);
         const requiredImportance = ValidationFormulaire.estVide(postData.importance); //if false = valide
 
 
         // si valide, on va faire un fetch a bd pour ajouter l'élément
         const config = {
             method: 'Post',
-            body: JSON.stringify(postData),//permet de transformer en chaine json
+            body: JSON.stringify(postData),
             headers: {
-                "Content-type": 'application/json' //indique que le message envoyer par fetch sera du json            }
+                "Content-type": 'application/json'
             }
         }
 
-        fetch("api/taches/ajouterUn.php", config)
-            .then((reponse) => {
-                return reponse.json();
-            })
-            .then((taches) => {
-                this.#taches.push(new Tache(taches.id, postData.task, postData.description, postData.importance));
-            })
-
-
-
-
+        try {
+            const reponse = await fetch("api/taches/ajouterUn.php", config);
+            const tache = await reponse.json();
+            this.#taches.push(new Tache(tache.id, postData.task, postData.description, postData.importance));
+        } catch (erreur) {
+            console.error(erreur);
+        }
     }
 
+
+
+
 }
+
