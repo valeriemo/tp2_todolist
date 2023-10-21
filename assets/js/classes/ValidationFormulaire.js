@@ -1,46 +1,50 @@
-export default class ValidationFormulaire{
+export default class ValidationFormulaire {
+    #_elForm;
+    #_elInputTache;
+    #_elInputImportance;
+    #_elInputDescription;
 
-//On mets un écouteur d'evenement sur le bouton submit 
+    constructor() {
+        this.#_elForm = document.querySelector('form');
+        this.#_elInputTache = document.querySelector('#task');
+        this.#_elInputImportance = document.querySelectorAll('input[type="radio"]');
+        this.#_elInputDescription = document.querySelector('#description');
 
-    // Pour les champs required(le champs tache et importance)
-    static estVide(postData) {
-
-        let estVide;
-        if(postData == ""){
-            estVide = true;
-        } else {
-            estVide = false;
-        }
-
-        return estVide;
+        this.init();
     }
 
-    /**
-     * Validation du formulaire
-     * @returns
-     */
-    static validForm(postData) {
-        console.log('validation', postData.task)
-        let estValide = true;
+    init() {
+        let estValide = true,
+            elRadioWrapper = this.#_elForm.querySelector('[data-js-radio-wrapper]'),
+            wrapperRequired = this.#_elInputTache.parentNode;
+        /**
+         * Validation des inputs required
+         */
+        console.log(wrapperRequired, elRadioWrapper)
 
-        //  //Input 'Nouvelle tâche' */
-        //  if (postData.task == '') {
-        //      this._elInputTask.parentNode.classList.add('error');
-        //      estValide = false;
-        //  } else {
-        //      if (this._elInputTask.parentNode.classList.contains('error')) this._elInputTask.parentNode.classList.remove('error');
-        //  }
+        if (this.#_elInputTache.value !== '' || this.#_elInputTache.value !== null) {
+            if (wrapperRequired.classList.contains('error')) {
+                wrapperRequired.classList.remove('error')
+            }
 
-        //  /* Inputs Radio 'Importance' */
-        //  let elCheckedImportance = this._el.querySelector('input[name="importance"]:checked');
+        } else {
+            wrapperRequired.classList.add('error');
+            estValide = false;
+        }
 
-        //  if (elCheckedImportance) {
-        //      if (this._elInputImportance[0].parentNode.classList.contains('error')) this._elInputImportance[0].parentNode.classList.remove('error');
-        //  } else {
-        //      this._elInputImportance[0].parentNode.classList.add('error');
-        //      estValide = false;
-        //  }
+        /**
+         * Validation des radios 
+         */
+        let elImportanceChecked = this.#_elForm.querySelector('input[name="importance"]:checked');
 
+        if (elImportanceChecked) {
+            if (elRadioWrapper.classList.contains('error')) {
+                elRadioWrapper.classList.remove('error');
+            }
+        } else {
+            elRadioWrapper.classList.add('error');
+            estValide = false;
+        }
         return estValide;
     }
 }

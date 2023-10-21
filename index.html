@@ -19,17 +19,17 @@
       <section>
         <h3>Ajouter une tâche</h3>
         <form method="post" data-js-form>
-          <div>
+          <div >
             <label for="task">Nouvelle tâche : </label>
-            <input required ="text" id="task" name="task" />
+            <input required ="text" id="task" name="task" min="3" max="40" />
           </div>
 
-          <div>
+          <div >
             <label for="description">Description : </label>
             <input type="text" id="description" name="description" />
           </div>
 
-          <div>
+          <div data-js-radio-wrapper >
             <label for="haute">Haute : </label>
             <input type="radio" id="haute" name="importance" value="1" />
             <label for="moyenne">Moyenne : </label>
@@ -75,7 +75,7 @@
 
         <!-- SECTION DES FILTRES -->
         <div class="to-do-list__actions" data-js-sort-tasks>
-          <button data-js-sort="tache">Trier par ordre alphabétique</button>
+          <button data-js-sort="alphabétique">Trier par ordre alphabétique</button>
           <button data-js-sort="importance">Trier par importance</button>
         </div>
       </section>

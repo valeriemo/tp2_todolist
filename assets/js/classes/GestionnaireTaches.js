@@ -27,7 +27,6 @@ export default class GestionnaireTaches {
         this.liste = document.querySelector("[data-js-tasks]");
         this.#btnAjouter = document.querySelector("[data-js-btn]");
 
-        this.#routeur = new Routeur();
         this.#formulaire = new Formulaire();
         this.#filtres = new Filtres();
 
@@ -37,6 +36,8 @@ export default class GestionnaireTaches {
     async init() {
         await this.recupererTachesBD();
 
+        this.#routeur = new Routeur();
+
         window.addEventListener('submitTask', function (e) {
             e.preventDefault();
             this.ajouterNouvelleTache(e.detail);
@@ -44,8 +45,12 @@ export default class GestionnaireTaches {
 
         window.addEventListener('taskFilter', function (e) {
             e.preventDefault();
-            this.#filtres.filtrer(e.detail);
+            this.#filtres.filtrerBtns(e.detail);
         }.bind(this))
+    }
+
+    getTaches() {
+        return this.#taches;
     }
 
     async recupererTachesBD() {
@@ -53,6 +58,7 @@ export default class GestionnaireTaches {
             const reponse = await fetch("api/taches/rechercherTout.php");
             const taches = await reponse.json();
             taches.forEach((tache) => {
+
                 this.#taches.push(new Tache(tache.id, tache.tache, tache.description, tache.importance));
             });
         } catch (erreur) {
@@ -79,41 +85,39 @@ export default class GestionnaireTaches {
                 "Content-type": 'application/json'
             }
         }
-        try{
+        try {
             let reponse = await fetch(`api/taches/supprimerUn.php?id=${id}`, config)
             reponse = await reponse.json();
         } catch (erreur) {
             console.error(erreur);
         }
-           
+
         const indexTache = this.#taches.findIndex(element => element.getId() == id);
         this.#taches.splice(indexTache, 1);
         const elAsupprimer = document.querySelector(`[data-js-task="${id}"]`);
         elAsupprimer.remove();
     }
 
-    async ajouterNouvelleTache(postData) { // postData = e.detail de l'écouteur d'event dans init()
-        // valider le formulaire-> appel les méthodes de validation
-        const requiredTask = ValidationFormulaire.estVide(postData.task); //if false = valide
-        const requiredImportance = ValidationFormulaire.estVide(postData.importance); //if false = valide
-
-
+    async ajouterNouvelleTache(postData) {
+        let validation = new ValidationFormulaire;
         // si valide, on va faire un fetch a bd pour ajouter l'élément
-        const config = {
-            method: 'Post',
-            body: JSON.stringify(postData),
-            headers: {
-                "Content-type": 'application/json'
+        if (validation = true) {
+            const config = {
+                method: 'Post',
+                body: JSON.stringify(postData),
+                headers: {
+                    "Content-type": 'application/json'
+                }
+            }
+            try {
+                const reponse = await fetch("api/taches/ajouterUn.php", config);
+                const tache = await reponse.json();
+                this.#taches.push(new Tache(tache.id, postData.task, postData.description, postData.importance));
+            } catch (erreur) {
+                console.error(erreur);
             }
         }
 
-        try {
-            const reponse = await fetch("api/taches/ajouterUn.php", config);
-            const tache = await reponse.json();
-            this.#taches.push(new Tache(tache.id, postData.task, postData.description, postData.importance));
-        } catch (erreur) {
-            console.error(erreur);
-        }
     }
 
 

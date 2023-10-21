@@ -25,7 +25,7 @@ export default class Routeur {
                     if (evenement.target.dataset.jsAction === "delete") {
                         const id = evenement.target.closest('div[data-js-task]').dataset.jsTask;
                         GestionnaireTaches.instance.supprimerTache(id);
-                        history.pushState(null, null, "/");
+                        history.pushState(null, null, "#");
                         this.gererURL();
                     }
                     const dataId = evenement.target.closest('div[data-js-task]').dataset.jsTask;
@@ -39,7 +39,7 @@ export default class Routeur {
     }
 
     gererURL() {
-        let hash = location.hash.slice(1) || "/",
+        let hash = location.hash.slice(1),
             id;
 
         if (hash.endsWith("/")) {

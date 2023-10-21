@@ -35,6 +35,7 @@ export default class Tache {
         return this.#id;
     }
 
+
     injectionTache() {
         // On clone le template
         const contenu = this.#templateTache.content;
@@ -64,6 +65,17 @@ export default class Tache {
         const contenu = this.#templateDetail.content;
         let template = contenu.cloneNode(true);
 
+        if(this.#description == ''){
+            this.#description = "Aucune description disponible";
+        }
+        if(this.#importance == 1){
+            this.#importance = "Haute";
+        }else if(this.#importance == 2){
+            this.#importance = "Moyenne";
+        }else {
+            this.#importance = "Basse";
+        }
+        
         const elDiv = template.querySelector('div')
         const content = elDiv.innerHTML.replaceAll("{{TACHE}}", this.#tache).replaceAll("{{DESCRIPTION}}", this.#description).replaceAll("{{IMPORTANCE}}", this.#importance);
 
