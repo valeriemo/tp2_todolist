@@ -8,10 +8,13 @@ export default class Filtres {
         this.#btnsFiltres = document.querySelectorAll('[data-js-sort]');
         this.#elDiv = document.querySelector('[data-js-tasks]');
 
-        this.init();
+        this.#init();
     }
 
-    init() {
+    /**
+     * Initialise les écouteurs d'événements
+     */
+    #init() {
         this.#btnsFiltres.forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -25,13 +28,17 @@ export default class Filtres {
         }.bind(this));
     }
 
+    /**
+     * Dirige l'action à effectuer selon le bouton cliqué
+     * @param {*} detail Action à effectuer
+     */
     filtrerBtns(detail) {
         if (detail.sort === "importance") {
             const order = "importance";
-            this.triImportance(order);
+            this.#triImportance(order);
         } else {
             const order = "tache";
-            this.triAlphabetique(order);
+            this.#triAlphabetique(order);
         }
     }
 
@@ -39,8 +46,7 @@ export default class Filtres {
      * Comportement pour le tri alphabétique
      * 
      */
-    async triAlphabetique(order) {
-        // on va faire un fetch a la base de donnée qui va les ordonner par ordre alphabétique
+    async #triAlphabetique(order) {
         const config = {
             method: 'GET',
             headers: {
@@ -59,7 +65,7 @@ export default class Filtres {
         }
     }
 
-    async triImportance(order) {
+    async #triImportance(order) {
         const config = {
             method: 'GET',
             headers: {

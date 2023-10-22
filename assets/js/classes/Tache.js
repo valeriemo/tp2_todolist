@@ -11,7 +11,6 @@ export default class Tache {
     #elementHTML;
     #conteneurDetail;
 
-
     constructor(id, tache, description, importance) {
         this.#id = id;
         this.#tache = tache;
@@ -24,23 +23,30 @@ export default class Tache {
         this.#conteneurDetail = document.querySelector("[data-js-task-detail]");
         this.#elementHTML;
 
-        this.init();
+        this.#init();
+    }
+    /**
+     * Initialisation de la tâche
+     */
+    #init() {
+        this.#injectionTache();
     }
 
-    init() {
-        this.injectionTache();
-    }
-
+    /**
+     * Getter pour le id de la tâche
+     * @returns {number} id 
+     */
     getId() {
         return this.#id;
     }
 
 
-    injectionTache() {
-        // On clone le template
+    /**
+     * Injection de la tâche dans le HTML
+     */
+    #injectionTache() {
         const contenu = this.#templateTache.content;
         let template = contenu.cloneNode(true);
-        // L'élément div a l'intérieur du template
         let elDivContent = template.querySelector('div');
         const content = elDivContent.innerHTML;
         elDivContent = content.replaceAll("{{TACHE}}", this.#tache).replaceAll("{{IMPORTANCE}}", this.#importance);
@@ -57,11 +63,12 @@ export default class Tache {
         // On injecte dans le HTML
         elDiv.innerHTML = elDivContent;
         this.#listeHTML.append(elDiv);
-
     }
 
+    /**
+     * Afficher le détail de la tâche
+     */
     afficherDetail() {
-        // cloner le content de template detail
         const contenu = this.#templateDetail.content;
         let template = contenu.cloneNode(true);
 

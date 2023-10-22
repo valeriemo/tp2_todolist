@@ -9,7 +9,6 @@ export default class GestionnaireTaches {
     #btnAjouter;
     #routeur;
     #formulaire;
-    #validation;
     #filtres;
     inputDescription = document.getElementById('description');
     inputImportance = document.querySelectorAll('input[type="radio"]');
@@ -22,7 +21,6 @@ export default class GestionnaireTaches {
             console.error("Un seul gestionnaire possible");
         }
 
-        // la liste des taches
         this.#taches = [];
         this.liste = document.querySelector("[data-js-tasks]");
         this.#btnAjouter = document.querySelector("[data-js-btn]");
@@ -30,10 +28,14 @@ export default class GestionnaireTaches {
         this.#formulaire = new Formulaire();
         this.#filtres = new Filtres();
 
-        this.init();
+        this.#init();
     }
 
-    async init() {
+    /**
+     * Initialisation du gestionnaire de tâches
+     * Récupération des tâches de la BD et ajout des événements sur les boutons
+     */
+    async #init() {
         await this.recupererTachesBD();
 
         this.#routeur = new Routeur();
@@ -48,11 +50,18 @@ export default class GestionnaireTaches {
             this.#filtres.filtrerBtns(e.detail);
         }.bind(this))
     }
-
+    
+    /**
+     * Getter pour la liste des tâches
+     * @returns {Array} la liste des tâches
+     */
     getTaches() {
         return this.#taches;
     }
 
+    /**
+     * Récupération des tâches de la BD
+     */
     async recupererTachesBD() {
         try {
             const reponse = await fetch("api/taches/rechercherTout.php");
@@ -66,18 +75,27 @@ export default class GestionnaireTaches {
         }
     }
 
+    /**
+     * Nettotage du détail pour afficher la "page" d'accueil
+     */
     afficherAccueil() {
         const conteneurDetail = document.querySelector("[data-js-task-detail]")
         conteneurDetail.innerHTML = '';
     }
 
-    // ATTENDRE QUE LA BD SOIT AFFICHER 
+    /**
+     * Afficher le détail de la tâche
+     */
     async afficherDetailTache() {
         const idTache = location.hash.slice(1);
         const tacheDetail = this.#taches.find(element => element.getId() == idTache);
         await tacheDetail.afficherDetail()
     }
 
+    /**
+     * Supprimer la tâche de la BD et du HTML
+     * @param {*} id 
+     */
     async supprimerTache(id) {
         const config = {
             method: 'GET',
@@ -98,9 +116,12 @@ export default class GestionnaireTaches {
         elAsupprimer.remove();
     }
 
+    /**
+     * Validation et ajout d'une nouvelle tâche dans la BD et dans le HTML
+     * @param {*} postData Les données du formulaire
+     */
     async ajouterNouvelleTache(postData) {
         let validation = new ValidationFormulaire;
-        // si valide, on va faire un fetch a bd pour ajouter l'élément
         if (validation = true) {
             const config = {
                 method: 'Post',
@@ -117,11 +138,6 @@ export default class GestionnaireTaches {
                 console.error(erreur);
             }
         }
-
     }
-
-
-
-
 }
 
